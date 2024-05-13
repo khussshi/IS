@@ -1,0 +1,69 @@
+#include <iostream> 
+#include <string> 
+#include <vector> 
+#include <algorithm> 
+using namespace std; 
+string rowTranspositionEncrypt(const string& plaintext, const vector<int>& key) { 
+int rows = key.size(); 
+int cols = (plaintext.size() + rows - 1) / rows; 
+vector<vector<char>> matrix(rows, vector<char>(cols, ' ')); 
+int index = 0; 
+for (int col = 0; col < cols; col++) { 
+for (int row : key) { 
+if (index < plaintext.size()) { 
+matrix[row][col] = plaintext[index++]; 
+} else { 
+break; 
+} 
+} 
+} 
+string ciphertext; 
+for (int row = 0; row < rows; row++) { 
+for (int col = 0; col < cols; col++) { 
+Practical 8 
+Implement row transposition cipher transposition operation. 
+3 
+ ciphertext += matrix[row][col]; 
+} 
+} 
+return ciphertext; 
+} 
+string rowTranspositionDecrypt(const string& ciphertext, const vector<int>& key) { 
+int rows = key.size(); 
+int cols = (ciphertext.size() + rows - 1) / rows; 
+vector<vector<char>> matrix(rows, vector<char>(cols, ' ')); 
+int index = 0; 
+for (int row = 0; row < rows; row++) { 
+for (int col = 0; col < cols; col++) { 
+matrix[row][col] = ciphertext[index++]; 
+} 
+} 
+string plaintext; 
+for (int col = 0; col < cols; col++) { 
+for (int row : key) { 
+plaintext += matrix[row][col]; 
+} 
+} 
+return plaintext; 
+} 
+int main() { 
+4 
+ string plaintext, encrypted, decrypted; 
+vector<int> key; 
+cout << "Enter the plaintext: "; 
+getline(cin, plaintext); 
+cout << "Enter the key (comma-separated row numbers, e.g., 2,1,3): "; 
+string keyInput; 
+getline(cin, keyInput); 
+size_t pos = 0; 
+while ((pos = keyInput.find(',')) != string::npos) { 
+key.push_back(stoi(keyInput.substr(0, pos))); 
+keyInput.erase(0, pos + 1); 
+} 
+key.push_back(stoi(keyInput)); // Add the last key element 
+encrypted = rowTranspositionEncrypt(plaintext, key); 
+cout << "Encrypted: " << encrypted << endl; 
+decrypted = rowTranspositionDecrypt(encrypted, key); 
+cout << "Decrypted: " << decrypted << endl; 
+return 0; 
+} 
