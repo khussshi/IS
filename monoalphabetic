@@ -1,0 +1,84 @@
+#include <iostream> 
+#include <string> 
+#include <vector> 
+#include <algorithm> 
+using namespace std; 
+// Function to encrypt a message using monoalphabetic substitution cipher 
+string monoalphabeticEncrypt(const string& message, const string& key) { 
+string encryptedMessage = message; 
+for (char& c : encryptedMessage) { 
+if (isalpha(c)) { 
+char base = isupper(c) ? 'A' : 'a'; 
+c = key[c - base]; 
+} 
+} 
+return encryptedMessage; 
+} 
+// Function to decrypt a message using monoalphabetic substitution cipher 
+string monoalphabeticDecrypt(const string& encryptedMessage, const string& key) { 
+string decryptedMessage = encryptedMessage; 
+for (char& c : decryptedMessage) { 
+if (isalpha(c)) { 
+char base = isupper(c) ? 'A' : 'a'; 
+c = 'A' + distance(key.begin(), find(key.begin(), key.end(), c)); 
+} 
+Practical 4
+3 
+ } 
+return decryptedMessage; 
+} 
+// Function to encrypt a message using polyalphabetic substitution cipher (Vigenere cipher) 
+string polyalphabeticEncrypt(const string& message, const string& key) { 
+string encryptedMessage; 
+int keyIndex = 0; 
+for (char c : message) { 
+if (isalpha(c)) { 
+char base = isupper(c) ? 'A' : 'a'; 
+char shifted = ((c - base) + (key[keyIndex % key.length()] - 'A')) % 26 + base; 
+encryptedMessage.push_back(shifted); 
+keyIndex++; 
+} else { 
+encryptedMessage.push_back(c); 
+} 
+} 
+return encryptedMessage; 
+} 
+// Function to decrypt a message using polyalphabetic substitution cipher (Vigenere cipher) 
+string polyalphabeticDecrypt(const string& encryptedMessage, const string& key) { 
+string decryptedMessage; 
+int keyIndex = 0; 
+for (char c : encryptedMessage) { 
+if (isalpha(c)) { 
+char base = isupper(c) ? 'A' : 'a'; 
+char shifted = ((c - base) - (key[keyIndex % key.length()] - 'A') + 26) % 26 + base; 
+4 
+ decryptedMessage.push_back(shifted); 
+keyIndex++; 
+} else { 
+decryptedMessage.push_back(c); 
+} 
+} 
+return decryptedMessage; 
+} 
+int main() { 
+string message = "Hello, World!"; 
+string monoalphabeticKey = "ZYXWVUTSRQPONMLKJIHGFEDCBA"; 
+string polyalphabeticKey = "KEY"; 
+// Encrypt using monoalphabetic substitution cipher 
+string encryptedMonoalphabetic = monoalphabeticEncrypt(message, 
+monoalphabeticKey); 
+cout << "Monoalphabetic Encrypted: " << encryptedMonoalphabetic << endl; 
+// Decrypt using monoalphabetic substitution cipher 
+string decryptedMonoalphabetic = monoalphabeticDecrypt(encryptedMonoalphabetic, 
+monoalphabeticKey); 
+cout << "Monoalphabetic Decrypted: " << decryptedMonoalphabetic << endl; 
+// Encrypt using polyalphabetic substitution cipher (Vigenere cipher) 
+string encryptedPolyalphabetic = polyalphabeticEncrypt(message, polyalphabeticKey); 
+cout << "Polyalphabetic Encrypted: " << encryptedPolyalphabetic << endl; 
+// Decrypt using polyalphabetic substitution cipher (Vigenere cipher) 
+5 
+ string decryptedPolyalphabetic = polyalphabeticDecrypt(encryptedPolyalphabetic,
+ polyalphabeticKey); 
+cout << "Polyalphabetic Decrypted: " << decryptedPolyalphabetic << endl; 
+return 0; 
+}
