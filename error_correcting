@@ -1,0 +1,58 @@
+def add_parity_bits(data): 
+"""Add parity bits to the data.""" 
+# Calculate the number of parity bits needed 
+parity_bits_count = 0 
+while 2 ** parity_bits_count <= len(data) + parity_bits_count: 
+parity_bits_count += 1 
+# Insert parity bits 
+encoded_data = [] 
+j = 0 
+for i in range(1, len(data) + parity_bits_count + 1): 
+if i == 2 ** j: 
+encoded_data.append(0) # Placeholder for parity bit 
+j += 1 
+else: 
+encoded_data.append(data.pop(0)) 
+# Calculate parity bits 
+for i in range(parity_bits_count): 
+parity_index = 2 ** i - 1 
+parity = 0 
+for j in range(parity_index, len(encoded_data), 2 * (parity_index + 1)): 
+parity ^= encoded_data[j] 
+encoded_data[parity_index] = parity 
+return encoded_data 
+def correct_errors(encoded_data): 
+"""Correct errors in the encoded data.""" 
+parity_bits_count = 0 
+while 2 ** parity_bits_count <= len(encoded_data): 
+parity_bits_count += 1 
+# Calculate the syndrome 
+syndrome = 0 
+for i in range(parity_bits_count): 
+parity_index = 2 ** i - 1 
+parity = 0 
+for j in range(parity_index, len(encoded_data), 2 * (parity_index + 1)): 
+parity ^= encoded_data[j] 
+syndrome |= parity << i 
+# Correct errors if any 
+if syndrome != 0: 
+error_index = syndrome - 1 
+encoded_data[error_index] ^= 1 
+return encoded_data 
+def hamming_encode(data): 
+"""Encode the data using Hamming (7, 4) code.""" 
+encoded_data = add_parity_bits(data) 
+return encoded_data 
+def hamming_decode(encoded_data): 
+"""Decode the Hamming encoded data.""" 
+corrected_data = correct_errors(encoded_data) 
+return corrected_data 
+# Example usage: 
+data = [1, 0, 1, 0] # 4-bit data 
+encoded_data = hamming_encode(data) 
+print("Encoded data:", encoded_data) 
+# Simulating an error in transmission 
+encoded_data[3] = 1 - encoded_data[3] # Introducing an error 
+print("Received data with error:", encoded_data) 
+corrected_data = hamming_decode(encoded_data) 
+print("Corrected data:", corrected_data)
