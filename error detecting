@@ -1,0 +1,47 @@
+ #include <iostream>
+ #include <bitset>
+ // Function to calculate the parity bit for a given data word
+ int calculateParityBit(int data) {
+ int parity = 0;
+ // Calculate parity by XORing all the bits
+ while (data) {
+ parity ^= (data & 1);
+ data >>= 1;
+ }
+ return parity;
+ }
+ // Function to encode the data with a parity bit
+ int addParityBit(int data) {
+ // Calculate the parity bit
+ int parity = calculateParityBit(data);
+ // Add the parity bit to the least significant bit position
+ return (data << 1) | parity;
+ }
+/ Function to check if there is any error in the received data
+ bool checkError(int receivedData) {
+ // Calculate the parity bit of the received data
+ int receivedParity = calculateParityBit(receivedData);
+ // Extract the received parity bit
+ int receivedBit = receivedData & 1;
+ // If the calculated parity and received parity don't match,
+ there is an error
+ return (receivedBit != receivedParity);
+ }
+ int main() {
+ // Example usage
+ int data = 0b1011; // Data to be sent
+ int encodedData = addParityBit(data); // Add parity bit
+ std::cout << "Encoded Data: " << std::bitset<5>(encodedData)
+ << std::endl;
+ // Simulate error by flipping a bit
+ int receivedData = encodedData ^ (1 << 2); // Flipping the
+ third bit
+ // Check for error
+ bool errorDetected = checkError(receivedData);
+ if (errorDetected) {
+ std::cout << "Error detected in received data!" << std::endl;
+ } else {
+ std::cout << "No error detected in received data." << std::endl;
+ }
+ return 0;
+ }
